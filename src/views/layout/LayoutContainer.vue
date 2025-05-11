@@ -1,13 +1,13 @@
 <script setup>
   import {
-    Management,
     Promotion,
     UserFilled,
     User,
     Crop,
     EditPen,
     SwitchButton,
-    CaretBottom
+    CaretBottom,
+    SetUp
   } from '@element-plus/icons-vue'
   import avatar from '@/assets/default.png'
   import { useUserStore } from '@/stores'
@@ -59,8 +59,8 @@
           router
         >
           <el-menu-item index="/article/channel">
-            <el-icon><Management /></el-icon>
-            <span>文章分类</span>
+            <el-icon><SetUp /></el-icon>
+            <span>计算器</span>
           </el-menu-item>
           <el-menu-item index="/article/manage">
             <el-icon><Promotion /></el-icon>
@@ -92,7 +92,7 @@
       <el-container>
         <el-header>
           <div>
-          黑马程序员：<strong>{{
+          用户：<strong>{{
             userStore.user.nickname || userStore.user.username
           }}</strong>
         </div>
@@ -124,7 +124,7 @@
         <el-main>
           <router-view></router-view>
         </el-main>
-        <el-footer>大事件 ©2023 Created by 黑马程序员</el-footer>
+        <el-footer>碳足迹 ©2025 Created by 碳踪客</el-footer>
       </el-container>
     </el-container>
   </template>
