@@ -1,7 +1,6 @@
 <script setup>
-import { ref, computed } from 'vue';
+import { ref, computed,watch,onMounted} from 'vue';
 import CarbonFootprintResult from './CarbonFootprintResult.vue';
-import { ElInputNumber, ElIcon, ElButton } from 'element-plus';
 import {
   ForkSpoon,
   Bicycle,
@@ -71,6 +70,14 @@ const quantityToAdd = ref(1);
 const itemsToCalculate = ref([]);
 const categories = ['衣', '食', '住', '行'];
 
+// 从 localStorage 加载数据
+onMounted(() => {
+  const storedItems = localStorage.getItem('carbonFootprintItems');
+  if (storedItems) {
+    itemsToCalculate.value = JSON.parse(storedItems);
+  }
+});
+
 const filteredCarbonData = computed(() => {
   if (selectedCategory.value) {
     return carbonData.value.filter(item => item.category === selectedCategory.value);
@@ -78,19 +85,7 @@ const filteredCarbonData = computed(() => {
   return [];
 });
 
-const addItem = () => {
-  if (selectedItemToAdd.value) {
-    itemsToCalculate.value.push({
-      item: selectedItemToAdd.value,
-      quantity: quantityToAdd.value,
-    });
-    selectedItemToAdd.value = null;
-    quantityToAdd.value = 1;
-    selectedCategory.value = null;
-  }
-};
-
-const categoryFootprintsInternal = computed(() => {
+const categoryFootprints = computed(() => {
   const footprints = {};
   categories.forEach(cat => (footprints[cat] = 0));
   itemsToCalculate.value.forEach(itemData => {
@@ -98,9 +93,6 @@ const categoryFootprintsInternal = computed(() => {
   });
   return Object.entries(footprints).map(([name, value]) => ({ name, value }));
 });
-
-// 将计算结果暴露出去
-const categoryFootprints = computed(() => categoryFootprintsInternal.value);
 
 const totalCarbonFootprint = computed(() => {
   return itemsToCalculate.value.reduce((total, itemData) => {
@@ -117,8 +109,32 @@ const selectItemToAdd = (item) => {
   selectedItemToAdd.value = item;
 };
 
+const addItem = () => {
+  if (selectedItemToAdd.value) {
+    itemsToCalculate.value.push({
+      item: selectedItemToAdd.value,
+      quantity: quantityToAdd.value,
+    });
+    selectedItemToAdd.value = null;
+    quantityToAdd.value = 1;
+    selectedCategory.value = null;
+    // 保存数据到 localStorage
+    localStorage.setItem('carbonFootprintItems', JSON.stringify(itemsToCalculate.value));
+  }
+};
+
+// 监听 itemsToCalculate 的变化，并在变化时保存到 localStorage
+watch(itemsToCalculate, (newItems) => {
+  localStorage.setItem('carbonFootprintItems', JSON.stringify(newItems));
+}, { deep: true });
+
+const removeItem = (index) => {
+  itemsToCalculate.value.splice(index, 1);
+  // watch 会自动保存
+};
+
 defineExpose({
-  categoryFootprints // 暴露这个计算属性
+  categoryFootprints
 });
 </script>
 
@@ -160,7 +176,7 @@ defineExpose({
     <h3>{{ selectedItemToAdd.item }} - 输入数量:</h3>
     <label for="addQuantity">数量:</label>
     <el-input-number v-model="quantityToAdd" :min="1" />
-    <el-button type="primary" @click="addItem" style="margin-top: 10px;">添加到计算</el-button>
+    <el-button type="primary" @click="addItem" style="margin-left: 10px;">添加到计算</el-button>
   </div>
 
   <div v-if="itemsToCalculate.length > 0">
@@ -168,16 +184,17 @@ defineExpose({
     <ul>
       <li v-for="(itemData, index) in itemsToCalculate" :key="index">
         {{ itemData.item.item }} - 数量: {{ itemData.quantity }}
-        <el-button size="small" type="danger" @click="itemsToCalculate.splice(index, 1)">移除</el-button>
+        <el-button size="small" type="danger" @click="removeItem(index)">移除</el-button>
       </li>
     </ul>
     <carbon-footprint-result :items-to-calculate="itemsToCalculate" :total-carbon="totalCarbonFootprint" />
-
-    </div>
+  </div>
   <div v-else-if="totalCarbonFootprint > 0">
     <carbon-footprint-result :items-to-calculate="[]" :total-carbon="totalCarbonFootprint" />
-    </div> 
+  </div>
 </template>
+
+
 <style scoped>
 .category-buttons {
   display: flex;
@@ -195,6 +212,4 @@ defineExpose({
 .el-button+.el-button {
     margin-left: 0;
 }
-
-
 </style>

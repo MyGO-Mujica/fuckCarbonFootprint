@@ -3,7 +3,7 @@
 </template>
 
 <script setup>
-import { ref, watch, onUnmounted,onMounted,nextTick } from 'vue';
+import { ref, onUnmounted, watch,nextTick } from 'vue';
 import * as echarts from 'echarts';
 
 const chartContainer = ref(null);
@@ -17,35 +17,33 @@ const props = defineProps({
 });
 
 const updateChart = () => {
-  console.log('updateChart called');
-  console.log('chartContainer.value is:', chartContainer.value);
-
+ 
   if (chartContainer.value) {
     if (!chartInstance) {
       chartInstance = echarts.init(chartContainer.value);
-      console.log('chartInstance initialized');
     }
-
-    const rawData = JSON.parse(JSON.stringify(props.chartData));
 
     const option = {
       title: {
-        text: '碳足迹占比（饼图）',
+        text: '碳足迹占比（柱图）',
         left: 'center',
       },
       tooltip: {
-        trigger: 'item',
-        formatter: '{a} <br/>{b} : {c} ({d}%)',
+        trigger: 'axis',
+        axisPointer: { type: 'shadow' }, // 柱形图的轴指针
+      },
+      xAxis: {
+        type: 'category',
+        data: props.chartData.map(item => item.name), // x 轴使用类别（衣、食、住、行）
+      },
+      yAxis: {
+        type: 'value',
       },
       series: [
         {
           name: '碳足迹',
-          type: 'pie',
-          radius: '55%',
-          center: ['50%', '60%'],
-          avoidLabelOverlap: false,
-          minAngle: 5,
-          data: rawData,
+          type: 'bar',
+          data: props.chartData.map(item => item.value),
           emphasis: {
             itemStyle: {
               shadowBlur: 10,
@@ -57,15 +55,10 @@ const updateChart = () => {
       ],
     };
 
+    console.log('ECharts option being set:', option);
     chartInstance.setOption(option);
   }
 };
-
-
-
-watch(() => props.chartData, (val) => {
-  console.log('Chart data received in chart component:', val);
-}, { immediate: true });
 
 watch(() => props.chartData, () => {
   nextTick(() => {
@@ -77,8 +70,5 @@ onUnmounted(() => {
   if (chartInstance) {
     chartInstance.dispose();
   }
-});
-onMounted(() => {
-  console.log('chartContainer.value onMounted:', chartContainer.value);
 });
 </script>
