@@ -1,1 +1,1 @@
-This can also be a carbon footprint
+This can also be a carbon footprint.
