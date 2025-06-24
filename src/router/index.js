@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import { useUserStore } from '@/stores'
+// import { useUserStore } from '@/stores'
 
 
 // createRouter 创建路由实例
@@ -16,8 +16,12 @@ const router = createRouter({
     {
       path: '/',
       component: () => import('@/views/layout/LayoutContainer.vue'),
-      redirect: '/article/manage',
+      redirect: '/index',
       children: [
+         {
+          path: '/index',
+          component: () => import('@/views/index/index.vue')
+        },
         {
           path: '/article/manage',
           component: () => import('@/views/article/ArticleManage.vue')
@@ -30,13 +34,9 @@ const router = createRouter({
           path: '/user/profile',
           component: () => import('@/views/user/UserProfile.vue')
         },
-        {
+            {
           path: '/user/avatar',
           component: () => import('@/views/user/UserAvatar.vue')
-        },
-        {
-          path: '/user/password',
-          component: () => import('@/views/user/UserPassword.vue')
         }
       ]
     }
@@ -50,10 +50,10 @@ const router = createRouter({
 // 2. false 拦回from的地址路径
 // 3. 具体路径 或 路径对象 拦截到对应的地址
 // '/login'  {name:'login'}
-router.beforeEach((to)=> {
-  // 如果没有token ，且访问的是非登录页，拦截到登录页，其他情况正常放行
-  const useStore =useUserStore()
-  if(!useStore.token && to.path !== '/login') return '/login'
+// router.beforeEach((to)=> {
+//   // 如果没有token ，且访问的是非登录页，拦截到登录页，其他情况正常放行
+//   const useStore =useUserStore()
+//   if(!useStore.token && to.path !== '/login') return '/login'
 
-})
+// })
 export default router

@@ -1,7 +1,7 @@
 import axios from 'axios'
-import{ useUserStore } from'@/stores'
+// import{ useUserStore } from'@/stores'
 import {ElMessage} from 'element-plus'
-import router from '@/router'
+// import router from '@/router'
 const baseURL = 'http://big-event-vue-api-t.itheima.net'
 
 const instance = axios.create({
@@ -11,17 +11,17 @@ const instance = axios.create({
 })
 
 //请求拦截器
-instance.interceptors.request.use(
-  (config) => {
-    // TODO 2. 携带token
-const userStore = useUserStore()
-if (userStore.token){
-  config.headers.Authorization = userStore.token
-}
-    return config
-  },
-  (err) => Promise.reject(err)
-)
+// instance.interceptors.request.use(
+//   (config) => {
+//     // TODO 2. 携带token
+// const userStore = useUserStore()
+// if (userStore.token){
+//   config.headers.Authorization = userStore.token
+// }
+//     return config
+//   },
+//   (err) => Promise.reject(err)
+// )
 
 //相应拦截器
 instance.interceptors.response.use(
@@ -38,9 +38,9 @@ instance.interceptors.response.use(
   (err) => {
    // TODO 5. 处理401错误
    //错误的特殊情况 => 401 权限不足 或 token 过期 => 拦截到登录
-if(err.response?.status === 401){
-   router.push('/login')
-}
+// if(err.response?.status === 401){
+//    router.push('/login')
+// }
    // 错误的默认情况
     ElMessage.error(err.response.message  || '服务器异常')
     return Promise.reject(err)

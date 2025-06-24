@@ -112,10 +112,10 @@ watch(isRegister, ()=> {
 </script>
 
 <template>
-  <!-- 
+  <!--
    1. 结构相关
-   el-row 表示一行 ，一行分成24份 
-   el-col 表示列 
+   el-row 表示一行 ，一行分成24份
+   el-col 表示列
    （1） :span="12"  代表在一行中 ， 占12份（50%）
    （2） :span="6" 表示在一行中 ， 占六份（25%）
    （3） :offset="3" 代表在一行中，左侧margin份数
@@ -126,19 +126,20 @@ watch(isRegister, ()=> {
 
    2. 校验相关
     （1）el-form => ：model="ruleForm"      绑定的整个form的数据对象 {xxx, xxx, xxx}
-    （2）el-form => :rules="rules"          绑定的整个rules规则对象  {xxx, xxx, xxx} 
+    （2）el-form => :rules="rules"          绑定的整个rules规则对象  {xxx, xxx, xxx}
     （3）表单元素 => v-model="ruleForm.xxx"  给表单元素，绑定form的子属性
     （4）el-form-item prop配置生效的事哪个校验规则 （和rules中的字段要对应）
 -->
   <el-row class="login-page">
     <el-col :span="12" class="bg"></el-col>
     <el-col :span="6" :offset="3" class="form">
+      <h1 class="title">carbon-footprint</h1>
       <!-- 注册相关表单 -->
-      <el-form 
-         :model="formModel" 
+      <el-form
+         :model="formModel"
          :rules="rules"
-         ref="form" 
-         size="large" 
+         ref="form"
+         size="large"
          autocomplete="off"
          v-if="isRegister">
         <el-form-item>
@@ -146,8 +147,8 @@ watch(isRegister, ()=> {
         </el-form-item>
         <el-form-item  prop="username">
           <el-input
-          v-model="formModel.username"  
-          :prefix-icon="User" 
+          v-model="formModel.username"
+          :prefix-icon="User"
           placeholder="请输入用户名"></el-input>
         </el-form-item>
         <el-form-item prop="password">
@@ -164,7 +165,7 @@ watch(isRegister, ()=> {
             :prefix-icon="Lock"
             type="password"
             placeholder="请输入再次密码"
-          ></el-input> 
+          ></el-input>
         </el-form-item>
         <el-form-item prop="email">
         <el-input
@@ -173,7 +174,7 @@ watch(isRegister, ()=> {
           placeholder="请输入邮箱"
         ></el-input>
       </el-form-item>
-      
+
       <el-form-item prop="code">
         <el-row :gutter="25">
           <el-col :span="15">
@@ -207,19 +208,19 @@ watch(isRegister, ()=> {
         </el-form-item>
       </el-form>
       <!-- 登录相关表单 -->
-      <el-form  
-         :model="formModel" 
+      <el-form
+         :model="formModel"
          :rules="rules"
-         ref="form" 
-         size="large" 
+         ref="form"
+         size="large"
          autocomplete="off" v-else>
         <el-form-item >
           <h1>登录</h1>
         </el-form-item>
         <el-form-item prop="username">
-          <el-input 
+          <el-input
           v-model="formModel.username"
-          :prefix-icon="User" 
+          :prefix-icon="User"
           placeholder="请输入用户名"
           ></el-input>
         </el-form-item>
@@ -239,9 +240,9 @@ watch(isRegister, ()=> {
           </div>
         </el-form-item>
         <el-form-item>
-          <el-button 
+          <el-button
           @click="login"
-          class="button" 
+          class="button"
           type="primary" plain auto-insert-space
             >登录</el-button
           >
@@ -257,12 +258,13 @@ watch(isRegister, ()=> {
 </template>
 
 <style lang="scss" scoped>
+@import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&display=swap');
 .login-page {
   height: 100vh;
   background-color: #fff;
   .bg {
-    background: url('@/assets/logo2.png') no-repeat 60% center / 240px auto,
-      url('@/assets/login_bg.jpg') no-repeat center / cover;
+    background: url('') no-repeat 60% center / 240px auto,
+      url('@/assets/bg.jpg') no-repeat center / cover;
     border-radius: 0 20px 20px 0;
   }
   .form {
@@ -272,6 +274,7 @@ watch(isRegister, ()=> {
     user-select: none;
     .title {
       margin: 0 auto;
+       font-family: "Dancing Script", cursive;
     }
     .button {
       width: 100%;
