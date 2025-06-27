@@ -4,18 +4,17 @@
     <carbon-footprint-bar-chart :chart-data="footprintData" v-if="footprintData.length > 0" />
     <p v-else>暂无碳足迹数据。</p>
   </div>
-<div class="total-container">
-  <div class="total-text">碳足迹总量：{{ totalCarbonFootprint.toFixed(2) }} kg CO₂</div>
-  <el-button type="primary" size="medium" @click="handleSubmit">
-    提交碳足迹数据
-  </el-button>
-</div>
+  <div class="total-container">
+    <div class="total-text">碳足迹总量：{{ totalCarbonFootprint.toFixed(2) }} kg CO₂</div>
+    <el-button type="primary" size="medium" @click="handleSubmit"> 提交碳足迹数据 </el-button>
+  </div>
 </template>
 
 <script setup>
 import CarbonFootprintChart from '@/components/CarbonFootprintCalculator/CarbonFootprintChart.vue'
 import { computed, watch, ref, onMounted } from 'vue'
 import { useCarbonFootprintStore } from '@/stores/carbonFootprintStore'
+import { addCarbonFootprintLog } from '@/api/user'
 
 const store = useCarbonFootprintStore()
 const footprintData = computed(() => store.categoryFootprints)
@@ -54,15 +53,30 @@ function transformToUploadData() {
     return {
       consumableName: item.item,
       consumableType: item.category,
-      CO2Emissions: (item.carbonFootprint * itemData.quantity).toFixed(2),
+      co2Emissions: (item.carbonFootprint * itemData.quantity).toFixed(2),
     }
   })
 }
-const handleSubmit = () => {
+const handleSubmit = async () => {
   const uploadData = transformToUploadData()
-  console.log(uploadData) // 后续可用 axios 或 fetch 上传
+  if (uploadData.length === 0) {
+    ElMessage.warning('没有可上传的碳足迹数据')
+    return
+  }
+  try {
+    // 批量上传，每条数据单独请求
+    for (const data of uploadData) {
+      await addCarbonFootprintLog(data)
+    }
+    ElMessage.success('碳足迹数据上传成功')
+    // 上传成功后可清空本地缓存
+    // localStorage.removeItem('carbonFootprintItems')
+  } catch (e) {
+    ElMessage.error('上传失败，请稍后重试，' + e.message)
+  }
 }
 </script>
+
 <style scoped>
 .total-container {
   display: flex;
