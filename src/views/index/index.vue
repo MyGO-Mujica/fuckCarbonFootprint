@@ -17,7 +17,7 @@
       <label for="slideImg" class="img">
         <img
           class="img_1"
-          src="https://c4.wallpaperflare.com/wallpaper/978/131/617/kiz-kulesi-turkey-istanbul-maiden-s-tower-wallpaper-preview.jpg"
+          src="https://idsb.tmgrup.com.tr/ly/uploads/images/2020/04/17/thumbs/800x531/31299.jpg"
         />
       </label>
       <div class="content content_1">
@@ -26,7 +26,7 @@
           伊斯坦布尔，这座横跨两大洲的迷人城市，被博斯普鲁斯海峡一分为二。作为全球最重要的城市之一，伊斯坦布尔的碳排放主要来自其庞大的交通网络和日益增长的能源消耗。
           城市正在积极推行绿色交通和可再生能源项目，以减少其碳足迹。
         </div>
-       
+
       </div>
     </div>
 
@@ -34,7 +34,7 @@
       <label for="slideImg" class="img">
         <img
           class="img_2"
-          src="https://c4.wallpaperflare.com/wallpaper/649/96/56/ankara-cityscape-night-night-sky-wallpaper-preview.jpg"
+          src="https://www.wendywutours.co.uk/resource/upload/2283/ankara.jpg.webp"
         />
       </label>
       <div class="content content_2">
@@ -51,7 +51,7 @@
       <label for="slideImg" class="img">
         <img
           class="img_3"
-          src="https://c4.wallpaperflare.com/wallpaper/620/34/558/turkey-izmir-mountains-wallpaper-preview.jpg"
+          src="https://turkeytoursplanners.com/uploads/0000/1/2022/04/09/142697.jpg"
         />
       </label>
       <div class="content content_3">
