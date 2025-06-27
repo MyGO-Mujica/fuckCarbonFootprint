@@ -1,18 +1,16 @@
 <script setup>
 import { userRegisterService, userLoginService } from '@/api/user'
-import { User, Lock, Message } from '@element-plus/icons-vue'
+import { User, Lock} from '@element-plus/icons-vue'
 import { ref ,watch} from 'vue'
 import { useUserStore } from '@/stores'
 import { useRouter } from 'vue-router'
+
 const isRegister = ref(false)
 const form = ref()
 //注册
 const formModel= ref({
    username:'',
    password:'',
-   repassword:'',
-   email: '',
-   code: ''
 })
 // 整个表单的校验规则
 // 1. 非空校验 required:true, message提示消息， trigger触发校验的时机 blur change
@@ -34,27 +32,6 @@ const rules = {
     { required: true, message: '请输入密码', trigger: 'blur'},
     { pattern: /^\S{6,15}$/, message:'密码必须是 6-15 位的非空字符', trigger: 'blur'}
   ],
-  repassword:[
-  { required: true, message: '请输入密码', trigger: 'blur'},
-  { pattern: /^\S{6,15}$/, message:'密码必须是 6-15 位的非空字符', trigger: 'blur'},
-  { validator: (rule, value, callback)=>{
-    // 判断 value 和当前 form 中收集的 password 是否一直
-    if( value !== formModel.value.password){
-      callback(new Error('两次输入密码不一致'))
-    } else{
-      callback() // 校验成功也需要callback
-     }
-   },
-  trigger: 'blur'
-    }
-  ],
-  email: [
-  { required: true, message: '请输入邮箱', trigger: 'blur' },
-  { type: 'email', message: '邮箱格式不正确', trigger: 'blur' }
-],
-code: [
-  { required: true, message: '请输入验证码', trigger: 'blur' }
-]
 }
 
 const register = async() => {
@@ -65,37 +42,15 @@ const register = async() => {
   isRegister.value=false
 }
 
-// 验证码发送逻辑
-const codeSending = ref(false)
-const countdown = ref(60)
-let timer = null
 
-const sendEmailCode = () => {
-  if (!formModel.value.email) {
-    ElMessage.error('请先输入邮箱')
-    return
-  }
-console.log('点击了获取验证码') // 测试用
-  // 模拟验证码发送，实际开发时需调用接口
-  ElMessage.success(`验证码已发送至邮箱：${formModel.value.email}`)
 
-  codeSending.value = true
-  countdown.value = 60
-  timer = setInterval(() => {
-    countdown.value--
-    if (countdown.value <= 0) {
-      codeSending.value = false
-      clearInterval(timer)
-    }
-  }, 1000)
-}
 
 const userStore = useUserStore()
 const router=useRouter()
 const login = async () =>{
   await form.value.validate()
   const res = await userLoginService(formModel.value)
-  userStore.setToken(res.data.token)
+  userStore.setToken(res.data.data)
   ElMessage.success('登录成功')
   router.push('/')
 }
@@ -104,9 +59,6 @@ watch(isRegister, ()=> {
   formModel.value= {
     username:'',
     password:'',
-    repassword:'',
-    email: '',
-    code: ''
   }
 })
 </script>
@@ -133,6 +85,7 @@ watch(isRegister, ()=> {
   <el-row class="login-page">
     <el-col :span="12" class="bg"></el-col>
     <el-col :span="6" :offset="3" class="form">
+      <h1 class="title1">碳足迹计算器 by 碳踪客</h1>
       <h1 class="title">carbon-footprint</h1>
       <!-- 注册相关表单 -->
       <el-form
@@ -159,43 +112,6 @@ watch(isRegister, ()=> {
             placeholder="请输入密码"
           ></el-input>
         </el-form-item>
-        <el-form-item prop="repassword">
-          <el-input
-            v-model="formModel.repassword"
-            :prefix-icon="Lock"
-            type="password"
-            placeholder="请输入再次密码"
-          ></el-input>
-        </el-form-item>
-        <el-form-item prop="email">
-        <el-input
-          v-model="formModel.email"
-          :prefix-icon="Message"
-          placeholder="请输入邮箱"
-        ></el-input>
-      </el-form-item>
-
-      <el-form-item prop="code">
-        <el-row :gutter="25">
-          <el-col :span="15">
-            <el-input
-              v-model="formModel.code"
-              placeholder="请输入验证码"
-            ></el-input>
-          </el-col>
-          <el-col :span="5">
-            <el-button
-              type="primary"
-              plain
-              @click="sendEmailCode"
-              :disabled="codeSending"
-            >
-              {{ codeSending ? `${countdown}s后重发` : '获取验证码' }}
-            </el-button>
-          </el-col>
-        </el-row>
-      </el-form-item>
-
         <el-form-item>
           <el-button @click="register" class="button" type="primary" plain auto-insert-space>
             注册
@@ -274,6 +190,12 @@ watch(isRegister, ()=> {
     user-select: none;
     .title {
       margin: 0 auto;
+       font-family: "Dancing Script", cursive;
+    }
+     .title1 {
+        font-size: 36px;
+        font-weight: bold;
+        margin: 0 auto;
        font-family: "Dancing Script", cursive;
     }
     .button {

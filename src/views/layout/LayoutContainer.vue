@@ -1,12 +1,14 @@
 <script setup>
 import {
   PictureFilled,
-  UserFilled,
+  Histogram,
   User,
   Crop,
   SwitchButton,
   CaretBottom,
+  ChatDotRound,
   SetUp,
+  Download,
   House,
 } from '@element-plus/icons-vue'
 import avatar from '@/assets/default.png'
@@ -64,29 +66,37 @@ const handleCommand = async (key) => {
           <el-icon><House /></el-icon>
           <span>主页</span>
         </el-menu-item>
-        <el-menu-item index="/article/channel">
+        <el-menu-item index="/calculator">
           <el-icon><SetUp /></el-icon>
           <span>计算器</span>
         </el-menu-item>
-        <el-menu-item index="/article/manage">
+        <el-menu-item index="/visualization">
           <el-icon><PictureFilled /></el-icon>
           <span>可视化</span>
         </el-menu-item>
-        <el-menu-item index="/user/profile">
-          <el-icon><UserFilled /></el-icon>
-          <span>个人中心</span>
+        <el-menu-item index="/user/history">
+          <el-icon><Histogram /></el-icon>
+          <span>历史记录</span>
+        </el-menu-item>
+        <el-menu-item index="/chat">
+          <el-icon><ChatDotRound /></el-icon>
+          <span>ai对话</span>
+        </el-menu-item>
+        <el-menu-item index="/appDownload">
+          <el-icon><Download /></el-icon>
+          <span>应用下载</span>
         </el-menu-item>
       </el-menu>
     </el-aside>
     <el-container>
       <el-header>
         <div>
-          用户：<strong>{{ userStore.user.nickname || userStore.user.username }}</strong>
+          用户：<strong>{{ userStore.user.username }}</strong>
         </div>
         <el-dropdown placement="bottom-end" @command="handleCommand">
           <!-- 展示给用户，默认看到的 -->
           <span class="el-dropdown__box">
-            <el-avatar :src="userStore.user.user_pic || avatar" />
+            <el-avatar :src="userStore.user.userPic || avatar" />
             <el-icon><CaretBottom /></el-icon>
           </span>
           <!-- 折叠的下拉部分 -->
@@ -143,6 +153,7 @@ const handleCommand = async (key) => {
     display: flex;
     align-items: center;
     justify-content: center;
+    height: 35px;
     font-size: 14px;
     color: #666;
   }
