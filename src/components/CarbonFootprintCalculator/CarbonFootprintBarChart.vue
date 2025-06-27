@@ -3,26 +3,38 @@
 </template>
 
 <script setup>
-import { ref, onUnmounted, watch,nextTick } from 'vue';
-import * as echarts from 'echarts';
+import { ref, onUnmounted, onMounted } from 'vue'
+import * as echarts from 'echarts'
 
-const chartContainer = ref(null);
-let chartInstance = null;
+const chartContainer = ref(null)
+let chartInstance = null
 
-const props = defineProps({
-  chartData: {
-    type: Array,
-    required: true,
-  },
-});
+// 从 localStorage 读取并转换为柱状图需要的数据格式
+function getBarChartDataFromLocal() {
+  const storedItems = localStorage.getItem('carbonFootprintItems')
+  if (!storedItems) return []
+  const parsedItems = JSON.parse(storedItems)
+  // 按 consumableType 分类汇总
+  const map = new Map()
+  parsedItems.forEach(itemData => {
+    const { category, carbonFootprint } = itemData.item
+    const value = carbonFootprint * itemData.quantity
+    if (!map.has(category)) map.set(category, 0)
+    map.set(category, map.get(category) + value)
+  })
+  // 转为 ECharts 需要的格式
+  return Array.from(map.entries()).map(([name, value]) => ({
+    name,
+    value: Number(value.toFixed(2))
+  }))
+}
 
 const updateChart = () => {
- 
   if (chartContainer.value) {
     if (!chartInstance) {
-      chartInstance = echarts.init(chartContainer.value);
+      chartInstance = echarts.init(chartContainer.value)
     }
-
+    const chartData = getBarChartDataFromLocal()
     const option = {
       title: {
         text: '碳足迹占比（柱图）',
@@ -30,11 +42,11 @@ const updateChart = () => {
       },
       tooltip: {
         trigger: 'axis',
-        axisPointer: { type: 'shadow' }, // 柱形图的轴指针
+        axisPointer: { type: 'shadow' },
       },
       xAxis: {
         type: 'category',
-        data: props.chartData.map(item => item.name), // x 轴使用类别（衣、食、住、行）
+        data: chartData.map(item => item.name),
       },
       yAxis: {
         type: 'value',
@@ -43,7 +55,7 @@ const updateChart = () => {
         {
           name: '碳足迹',
           type: 'bar',
-          data: props.chartData.map(item => item.value),
+          data: chartData.map(item => item.value),
           emphasis: {
             itemStyle: {
               shadowBlur: 10,
@@ -53,22 +65,21 @@ const updateChart = () => {
           },
         },
       ],
-    };
-
-    console.log('ECharts option being set:', option);
-    chartInstance.setOption(option);
+    }
+    chartInstance.setOption(option)
   }
-};
+}
 
-watch(() => props.chartData, () => {
-  nextTick(() => {
-    updateChart();
-  });
-}, { deep: true, immediate: true });
+onMounted(() => {
+  updateChart()
+  // 监听 storage 事件，支持多标签页同步
+  window.addEventListener('storage', updateChart)
+})
 
 onUnmounted(() => {
   if (chartInstance) {
-    chartInstance.dispose();
+    chartInstance.dispose()
   }
-});
+  window.removeEventListener('storage', updateChart)
+})
 </script>

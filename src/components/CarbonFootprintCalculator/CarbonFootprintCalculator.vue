@@ -136,6 +136,14 @@ onMounted(() => {
   }
 })
 
+// 从 localStorage 加载数据
+onMounted(() => {
+  const storedItems = localStorage.getItem('carbonFootprintItems')
+  if (storedItems) {
+    itemsToCalculate.value = JSON.parse(storedItems)
+  }
+})
+
 const filteredCarbonData = computed(() => {
   if (selectedCategory.value) {
     return carbonData.value.filter((item) => item.category === selectedCategory.value)
@@ -186,7 +194,6 @@ watch(
   itemsToCalculate,
   (newItems) => {
     localStorage.setItem('carbonFootprintItems', JSON.stringify(newItems))
-    console.log(JSON.stringify(newItems))
   },
   { deep: true },
 )
@@ -238,7 +245,13 @@ defineExpose({
   <div v-if="selectedItemToAdd">
     <h3>{{ selectedItemToAdd.item }} - 输入数量:</h3>
     <label for="addQuantity">数量:</label>
-    <el-input-number v-model="quantityToAdd" :min="1" />
+    <el-input-number
+      v-model="quantityToAdd"
+      :min="0.01"
+      :step="1"
+      :precision="2"
+      controls-position="right"
+    />
     <el-button type="primary" @click="addItem" style="margin-left: 10px">添加到计算</el-button>
   </div>
 

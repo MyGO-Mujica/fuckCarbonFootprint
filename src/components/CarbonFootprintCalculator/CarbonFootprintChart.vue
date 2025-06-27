@@ -36,6 +36,9 @@ const getChartDataFromLocal = () => {
 }
 
 const updateChart = () => {
+  console.log('updateChart called');
+  console.log('chartContainer.value is:', chartContainer.value);
+
   if (chartContainer.value) {
     if (!chartInstance) {
       chartInstance = echarts.init(chartContainer.value)
